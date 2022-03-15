@@ -25,7 +25,7 @@ class Move(models.Model):
     moveNum = models.IntegerField(default = -1)
 
     def __str__(self):
-        moveStr = "Move Name: " + moveName + ", Move Number: " + moveNum
+        moveStr = "Move Name: " + self.moveName + ", Move Number: " + str(self.moveNum)
         return moveStr
 
 class Pakimon(models.Model):
@@ -37,5 +37,5 @@ class Pakimon(models.Model):
     pakiName = models.CharField(max_length = 280)
 
     def __str__(self):
-        pakiStr = "Pakimon Name: " + pakiName
+        pakiStr = "Pakimon Name: " + self.pakiName
         return pakiStr
