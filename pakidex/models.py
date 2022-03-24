@@ -7,13 +7,13 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key = True)
     verified = models.BooleanField(default = False)
 
+class Card(models.Model):
+    personalName = models.CharField(max_length = 280)
+
 class Deck(models.Model):
     deck = models.OneToOneField(User, on_delete=models.CASCADE, primary_key = True)
     verified = models.BooleanField(default = False)
-
-class Card(models.Model):
-    personalName = models.CharField(max_length = 280)
-    whoseDeck = models.ForeignKey(Deck, on_delete=models.CASCADE)
+    whoseCard = models.ManyToManyField(Card)
 
 class Move(models.Model):
     whichCard = models.ForeignKey(
