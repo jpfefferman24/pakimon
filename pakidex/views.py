@@ -3,6 +3,7 @@ from django.views import View
 from django.http import HttpResponse
 
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Profile, Deck, Card, Move, Pakimon
 
@@ -23,30 +24,42 @@ class IndexView(View):
         return render(request, 'pakidex/index.html', context)
 
     def post(self, request):
-        if 'logout' in request.POST.keys():
-            logout(request)
-            form = AuthenticationForm()
-
-        else:
-            form = AuthenticationForm(data = request.POST)
-            if form.is_valid():
-                username = form.cleaned_data['username']
-                passsword = form.cleaned_data['password']
-                user = authenticate(username = username, password = password)
-                print(username, password)
-                if user is not None:
-                    login(request, user = user)
+        form = AuthenticationForm(data = request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username = username, password = password)
+            print(username, password)
+            if user is not None:
+                login(request, user = user)
 
         context = {
             'form': form,
             'profile': self.allProfiles,
         }
 
-        return render(request, 'pakidex/index.html', context)
+        return render(request, 'pakidex/userPage.html', context)
 
-class DeckView(View):
+class UserView(View):
+
+    allCards = Deck.objects.all()
+
     model = Card
     template_name = 'pakidex/deck.html'
 
     def get_query(self):
         return Card.objects.all()
+
+    def post(self, request):
+        if 'logout' in request.POST.keys():
+            logout(request)
+            form = AuthenticationForm()
+
+        context = {
+            'form': form,
+            'profile': self.allProfiles,
+            'deck':
+        }
+        print(context)
+
+        return render(request, 'pakidex/index.html', context)

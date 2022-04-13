@@ -4,7 +4,7 @@
 <html>
 
   <head>
-    <title>Pakimon Login</title>
+    <title>Play Pakimon</title>
 
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
@@ -23,19 +23,32 @@
     <div class="container">
       <h1>Pakimon</h1>
 
+      <h3>Welcome, {{ user.username }}</h3>
+
+      <br />
+
       <form method="POST">
         {% csrf_token %}
-
-        <table>
-          {{ form }}
-        </table>
-
-        <button type="submit" class="btn btn-danger">Login</button>
+        <input type="hidden" name="logout" value="logout"></input>
+        <button type="submit" class="btn btn-danger">Logout</button>
       </form>
 
+      <br />
+
+      {% for Card in Deck %}
+        <div class="row border border-dark">
+          <div class="col-3 text-primary">
+            <strong>
+              {{ Card.personalName }}
+            </strong>
+            {% for move in Card.move %}
+            <strong> {{ move.move }} </strong>
+            {% endfor %}
+          </div>
+        </div>
+
+      {% endfor %}
 
     </div>
-
   </body>
-
 </html>
