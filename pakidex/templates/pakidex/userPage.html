@@ -35,18 +35,16 @@
 
       <br />
 
-      {% for Card in Deck %}
+      {% for deck in userDecks %}
         <div class="row border border-dark">
-          <div class="col-3 text-primary">
+          <div class="col-1 text-primary">
             <strong>
-              {{ Card.personalName }}
+              {% for card in deck.whoseCard %}
+                {{ deck.whoseCard.personalName }}
+              {% endfor %}
             </strong>
-            {% for move in Card.move %}
-            <strong> {{ move.move }} </strong>
-            {% endfor %}
           </div>
         </div>
-
       {% endfor %}
 
     </div>

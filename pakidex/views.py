@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from django.http import HttpResponse
 
@@ -29,37 +29,36 @@ class IndexView(View):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(username = username, password = password)
-            print(username, password)
+            # print(username, password)
             if user is not None:
                 login(request, user = user)
 
-        context = {
-            'form': form,
-            'profile': self.allProfiles,
-        }
+                context = {
+                    'form': form,
+                    'profile': self.allProfiles,
+                }
 
-        return render(request, 'pakidex/userPage.html', context)
+                # return render(request, 'pakidex/userPage.html', context)
+                # return redirect(f'/{user.username}', username = user.username)
+
+                userDecks = Deck.objects.filter(deck=user)
+
+                context = {
+                    'form': form,
+                    'profile': self.allProfiles,
+                    'deck' : userDecks,
+                }
+                print(context)
+
+                return render(request, 'pakidex/userPage.html', context)
 
 class UserView(View):
-
-    allCards = Deck.objects.all()
-
-    model = Card
-    template_name = 'pakidex/deck.html'
+    template_name = 'pakidex/userPage.html'
 
     def get_query(self):
         return Card.objects.all()
 
-    def post(self, request):
+    def get(self, usrPage, request):
         if 'logout' in request.POST.keys():
             logout(request)
             form = AuthenticationForm()
-
-        context = {
-            'form': form,
-            'profile': self.allProfiles,
-            'deck':
-        }
-        print(context)
-
-        return render(request, 'pakidex/index.html', context)
