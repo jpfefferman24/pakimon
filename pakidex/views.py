@@ -23,34 +23,24 @@ class IndexView(View):
 
         return render(request, 'pakidex/index.html', context)
 
-    def post(self, request):
-        form = AuthenticationForm(data = request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(username = username, password = password)
-            # print(username, password)
-            if user is not None:
-                login(request, user = user)
-
-                context = {
-                    'form': form,
-                    'profile': self.allProfiles,
-                }
-
-                # return render(request, 'pakidex/userPage.html', context)
+    # def post(self, request):
+    #     form = AuthenticationForm(data = request.POST)
+    #     if form.is_valid():
+    #         username = form.cleaned_data['username']
+    #         password = form.cleaned_data['password']
+    #         user = authenticate(username = username, password = password)
+    #         # print(username, password)
+    #         if user is not None:
+    #             login(request, user = user)
+    #
+    #             context = {
+    #                 'form': form,
+    #                 'profile': self.allProfiles,
+    #             }
+    #
+    #             return render(request, 'pakidex/index.html', context)
                 # return redirect(f'/{user.username}', username = user.username)
 
-                userDecks = Deck.objects.filter(deck=user)
-
-                context = {
-                    'form': form,
-                    'profile': self.allProfiles,
-                    'deck' : userDecks,
-                }
-                print(context)
-
-                return render(request, 'pakidex/userPage.html', context)
 
 class UserView(View):
     template_name = 'pakidex/userPage.html'
@@ -62,3 +52,15 @@ class UserView(View):
         if 'logout' in request.POST.keys():
             logout(request)
             form = AuthenticationForm()
+
+    def post(self, request):
+        userDecks = Deck.objects.filter(deck=user)
+
+        context = {
+            'form': form,
+            'profile': self.allProfiles,
+            'deck' : userDecks,
+        }
+        print(context)
+
+        return render(request, 'pakidex/userPage.html', context)
