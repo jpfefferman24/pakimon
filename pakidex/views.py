@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -44,6 +44,7 @@ class IndexView(View):
 
 class UserView(View):
     template_name = 'pakidex/userPage.html'
+    allProfiles = Profile.objects.all()
 
     def get_query(self):
         return Card.objects.all()
@@ -53,14 +54,21 @@ class UserView(View):
             logout(request)
             form = AuthenticationForm()
 
-    def post(self, request):
-        userDecks = Deck.objects.filter(deck=user)
+    def post(self, request, username):
+        if 'logout' in request.POST.keys():
+            logout(request)
+            form = AuthenticationForm()
+            return HttpResponseRedirect("http://127.0.0.1:8000/")
 
-        context = {
-            'form': form,
-            'profile': self.allProfiles,
-            'deck' : userDecks,
-        }
-        print(context)
+        else:
+            user = User.objects.get(username=username)
+            userDecks = Deck.objects.filter(deck=user)
 
-        return render(request, 'pakidex/userPage.html', context)
+            context = {
+                # 'form': form,
+                'profile': self.allProfiles,
+                'deck' : userDecks,
+            }
+            print(context)
+
+            return render(request, 'pakidex/userPage.html', context)
