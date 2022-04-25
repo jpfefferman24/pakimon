@@ -63,12 +63,18 @@ class UserView(View):
         else:
             user = User.objects.get(username=username)
             userDecks = Deck.objects.filter(deck=user)
+            userDecks[0].cards = userDecks[0].whoseCard.all()
+            # for card in deckCards:
+            #     print(card.personalName)
 
             context = {
                 # 'form': form,
+                'user' : user,
                 'profile': self.allProfiles,
-                'deck' : userDecks,
+                'userDecks' : userDecks,
             }
+            print(user.username)
             print(context)
+            print(context['userDecks'][0].__dict__)
 
             return render(request, 'pakidex/userPage.html', context)
