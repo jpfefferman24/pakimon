@@ -63,9 +63,10 @@ class UserView(View):
         else:
             user = User.objects.get(username=username)
             userDecks = Deck.objects.filter(deck=user)
-            userDecks[0].cards = userDecks[0].whoseCard.all()
-            # for card in deckCards:
-            #     print(card.personalName)
+            for deck in userDecks:
+                deck.cards = deck.whoseCard.all()
+                for card in deck.cards:
+                    print(card.personalName)
 
             context = {
                 # 'form': form,

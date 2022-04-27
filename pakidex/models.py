@@ -8,7 +8,27 @@ class Profile(models.Model):
     verified = models.BooleanField(default = False)
 
 class Card(models.Model):
+    Grass = 'gr'
+    Water = 'h20'
+    Fire = 'fr'
+    Ice = 'ic'
+    Flying = 'fy'
+    Rock = 'ro'
+    typeList = [
+        (Grass, 'Grass'),
+        (Water, 'Water'),
+        (Fire, 'Fire'),
+        (Ice, 'Ice'),
+        (Flying, 'Flying'),
+        (Rock, 'Rock'),
+    ]
+    Bulbasaur = 'bulb'
+    Squirtle = 'sqrt'
     personalName = models.CharField(max_length = 280)
+    species = models.CharField(max_length = 280)
+    type = models.CharField(max_length = 12, choices = typeList, default = Grass,)
+    level = models.IntegerField(default = 1)
+    health = models.IntegerField(default = 1)
 
 class Deck(models.Model):
     deck = models.OneToOneField(User, on_delete=models.CASCADE, primary_key = True)
