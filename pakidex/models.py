@@ -8,12 +8,13 @@ class Profile(models.Model):
     verified = models.BooleanField(default = False)
 
 class Card(models.Model):
-    Grass = 'gr'
-    Water = 'h20'
-    Fire = 'fr'
-    Ice = 'ic'
-    Flying = 'fy'
-    Rock = 'ro'
+    Grass = 'Grass'
+    Water = 'Water'
+    Fire = 'Fire'
+    Ice = 'Ice'
+    Flying = 'Flying'
+    Rock = 'Rock'
+    Electric = 'Electric'
     typeList = [
         (Grass, 'Grass'),
         (Water, 'Water'),
@@ -21,11 +22,26 @@ class Card(models.Model):
         (Ice, 'Ice'),
         (Flying, 'Flying'),
         (Rock, 'Rock'),
+        (Electric, 'Electric'),
     ]
-    Bulbasaur = 'bulb'
-    Squirtle = 'sqrt'
+    Bulbasaur = 'Bulbasaur'
+    Squirtle = 'Squirtle'
+    Charmander = 'Charmander'
+    Pikachu = 'Pikachu'
+    Pidgey = 'Pidgy'
+    Geodude = 'Geodude'
+    Vanillite = 'Vanillite'
+    speciesList = [
+        (Bulbasaur, "Bulbasaur"),
+        (Squirtle, "Squirtle"),
+        (Charmander, "Charmander"),
+        (Pikachu, "Pikachu"),
+        (Pidgey, "Pidgey"),
+        (Geodude, "Geodude"),
+        (Vanillite, "Vanillite"),
+    ]
     personalName = models.CharField(max_length = 280)
-    species = models.CharField(max_length = 280)
+    species = models.CharField(max_length = 280, choices = speciesList, default = Bulbasaur)
     type = models.CharField(max_length = 12, choices = typeList, default = Grass,)
     level = models.IntegerField(default = 1)
     health = models.IntegerField(default = 1)

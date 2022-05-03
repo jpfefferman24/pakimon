@@ -36,15 +36,49 @@
       <br />
 
       {% for deck in userDecks %}
-        <div class="row border border-dark">
-          <div class="col-1 text-primary">
-            <strong>
-              {% for card in deck.cards %}
-                {{ card.personalName }}
-              {% endfor %}
-            </strong>
+        <div class="container">
+          <div class="row">
+            {% for card in deck.cards %}
+              <div class="col-3">
+                <div class="card" style="width: 18rem;">
+                  <h5 class="card-title">{{ card.personalName }}</h5>
+                  <h6 class="card-subtitle">{{ card.species }}</h6>
+                  <br />
+                  <p>Type: {{ card.type }}</p>
+                  <p>Level: {{ card.level }}</p>
+                  <p>Health: {{ card.health }} </p>
+                </div>
+              </div>
+            {% endfor %}
           </div>
         </div>
+      {% endfor %}
+
+    <br />
+
+      {% for deck in userDecks %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Personal Name</th>
+              <th scope="col">Species</th>
+              <th scope="col">Type</th>
+              <th scope="col">Level</th>
+              <th scope="col">Health</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for card in deck.cards %}
+              <tr>
+                <td>{{ card.personalName }}</td>
+                <td>{{ card.species }}</td>
+                <td>{{ card.type }}</td>
+                <td>{{ card.level }}</td>
+                <td>{{ card.health }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       {% endfor %}
 
     </div>
