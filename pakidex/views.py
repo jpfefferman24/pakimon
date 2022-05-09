@@ -79,3 +79,27 @@ class UserView(View):
             print(context['userDecks'][0].__dict__)
 
             return render(request, 'pakidex/userPage.html', context)
+
+class BuildView(View):
+    template_name = "pakidex/buildDeck.html"
+    newDeck = Deck()
+    newDeck.save()
+    context['deck_id'] = newDeck.id
+
+    def post(self, request):
+        newCard = Card(
+            personalName = request.POST['pNameInput'],
+            species = request.POST['speciesInput'],
+            type = request.POST['typeInput'],
+            level = request.POST['lvlInput'],
+            health = level * 10,
+        )
+
+        newCard.save()
+        newDeck.append(newCard)
+
+        conext = {
+            'deck' = newDeck,
+        }
+
+        return render(request, 'pakidex/buildDeck.html', context)

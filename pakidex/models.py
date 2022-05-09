@@ -47,7 +47,7 @@ class Card(models.Model):
     health = models.IntegerField(default = 1)
 
 class Deck(models.Model):
-    deck = models.OneToOneField(User, on_delete=models.CASCADE, primary_key = True)
+    deck = models.ManyToManyField(User)
     verified = models.BooleanField(default = False)
     whoseCard = models.ManyToManyField(Card)
 
