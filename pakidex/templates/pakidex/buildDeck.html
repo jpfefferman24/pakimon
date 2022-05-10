@@ -2,7 +2,7 @@
 <html>
 
   <head>
-    <title>Play Pakimon</title>
+    <title>Deck Builder</title>
 
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
@@ -19,7 +19,53 @@
 
   <body>
 
-    <h1>Bruh</h1>
+    <h1>Deck Builder</h1>
+
+    {% for i in range(len(8)) %}
+      <div class="container">
+        <div class="row">
+            <div class="col-3">
+              <div class="card" style="width: 18rem;">
+                <form action="submit">
+                  <input type="hidden" name="deck_id" value="{{ deck_id }}" />
+                  <div class="form-group">
+                    <label for="pName">Personal Name:</label>
+                    <input type="text" class="form-control" id="pName">
+                  </div>
+                  <div class="form-group">
+                    <label for="type">Species:</label>
+                    <select class="form-control" id="type">
+                      <option>Grass</option>
+                      <option>Water</option>
+                      <option>Fire</option>
+                      <option>Electric</option>
+                      <option>Ice</option>
+                      <option>Flying</option>
+                      <option>Rock</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="species">Species:</label>
+                    <select class="form-control" id="species">
+                      <option>Bulbasaur</option>
+                      <option>Squirtle</option>
+                      <option>Charmander</option>
+                      <option>Pikachu</option>
+                      <option>Vanillite</option>
+                      <option>Pidgey</option>
+                      <option>Geodude</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="level">Level</label>
+                    <input type="text" class="form-control" id="lvl">
+                  </div>
+                </form>
+              </div>
+            </div>
+        </div>
+      </div>
+    {% endfor %}
 
   </body>
 

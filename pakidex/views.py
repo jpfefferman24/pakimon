@@ -82,8 +82,12 @@ class UserView(View):
 
 class BuildView(View):
     template_name = "pakidex/buildDeck.html"
+    allProfiles = Profile.objects.all()
     newDeck = Deck()
     newDeck.save()
+    context = {
+        'deck' : newDeck,
+    }
     context['deck_id'] = newDeck.id
 
     def post(self, request):
@@ -98,8 +102,8 @@ class BuildView(View):
         newCard.save()
         newDeck.append(newCard)
 
-        conext = {
-            'deck' = newDeck,
+        context = {
+            'deck' : newDeck,
         }
 
         return render(request, 'pakidex/buildDeck.html', context)
