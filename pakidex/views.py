@@ -90,7 +90,22 @@ class BuildView(View):
     }
     context['deck_id'] = newDeck.id
 
-    def post(self, request):
+    def get(self, request, username):
+        currUser = User.objects.get(username = username)
+        # currUserDecks = Deck.objects.filter(deck = username)
+        # self.context['currUser'] = currUser
+        # self.context['currUserDecks'] = currUserDecks
+        if request.user.username == username:
+            self.context['me'] = request.user
+            return render(request, 'pakidex/buildDeck.html', self.context)
+        else:
+            if request.user.is_authenticated:
+                self.context['me'] = request.user
+                return render(request, 'pakidex/buildDeck.html', self.context)
+            else:
+                return render(request, 'pakidex/buildDeck.html', self.context)
+
+    def post(self, request, username):
         newCard = Card(
             personalName = request.POST['pNameInput'],
             species = request.POST['speciesInput'],
