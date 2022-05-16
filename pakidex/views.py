@@ -83,14 +83,15 @@ class UserView(View):
 class BuildView(View):
     template_name = "pakidex/buildDeck.html"
     allProfiles = Profile.objects.all()
-    newDeck = Deck()
-    newDeck.save()
-    context = {
-        'deck' : newDeck,
-    }
-    context['deck_id'] = newDeck.id
 
     def get(self, request, username):
+        newDeck = Deck()
+        newDeck.set(deck=request.user)
+        newDeck.save()
+        context = {
+            'deck' : newDeck,
+        }
+        context['deck_id'] = newDeck.id
         currUser = User.objects.get(username = username)
         # currUserDecks = Deck.objects.filter(deck = username)
         # self.context['currUser'] = currUser
@@ -106,15 +107,25 @@ class BuildView(View):
                 return render(request, 'pakidex/buildDeck.html', self.context)
 
     def post(self, request, username):
+        newDeck = Deck()
+        newDeck.set(deck=request.user)
+        newDeck.save()
+        context = {
+            'deck' : newDeck,
+        }
+        context['deck_id'] = newDeck.id
         newCard = Card(
-            personalName = request.POST['pNameInput'],
-            species = request.POST['speciesInput'],
-            type = request.POST['typeInput'],
-            level = request.POST['lvlInput'],
-            health = level * 10,
+            personalName = request.POST['pName'],
+            species = request.POST['species'],
+            type = request.POST['type'],
+            level = request.POST['level'],
+            health = int(request.POST['level']) * 10,
         )
 
+        newDeck = Deck.objects.filter(id=request.POST['deck_id'])
         newCard.save()
+        print("newCard.save()")
+        print(newCard)
         newDeck.append(newCard)
 
         context = {
