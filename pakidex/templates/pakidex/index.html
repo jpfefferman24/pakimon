@@ -24,9 +24,9 @@
     <script type="text/javascript">
       function customSubmit() {
         myForm = document.getElementById("loginForm");
-        usrnmeInput = document.getElementById("usrnme");
-        psswdInput = document.getElementById("psswd");
-        user = usrnmeInput.value;
+        usernameInput = document.getElementById("username");
+        passwordInput = document.getElementById("password");
+        user = usernameInput.value;
         myForm.action = "/play/" + user;
         myForm.submit();
       }
@@ -37,8 +37,8 @@
       <h1>Pakimon</h1>
 
       <form id="loginForm" method="POST">
-        <p><input type="username" id="usrnme" name="usrnme" /></p>
-        <p><input type="password" id="psswd" name="psswd" /></p>
+        <p><input type="username" id="username" name="username" /></p>
+        <p><input type="password" id="password" name="password" /></p>
         <button onclick="customSubmit()">Submit</button>
         {% csrf_token %}
       </form>

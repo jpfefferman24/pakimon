@@ -61,6 +61,16 @@ class UserView(View):
             return HttpResponseRedirect("http://127.0.0.1:8000/")
 
         else:
+            print(request.POST)
+            form = AuthenticationForm(data=request.POST)
+            if form.is_valid():
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password']
+                print(username, password)
+                user = authenticate(username = username, password = password)
+                if user is not None:
+                    login(request, user = user)
+            print("login: ", request.user)
             user = User.objects.get(username=username)
             userDecks = Deck.objects.filter(deck=user)
             for deck in userDecks:
@@ -85,9 +95,10 @@ class BuildView(View):
     allProfiles = Profile.objects.all()
 
     def get(self, request, username):
+        user = request.user
         newDeck = Deck()
-        newDeck.set(deck=request.user)
         newDeck.save()
+        newDeck.deck.add(user.id)
         context = {
             'deck' : newDeck,
         }
@@ -97,19 +108,20 @@ class BuildView(View):
         # self.context['currUser'] = currUser
         # self.context['currUserDecks'] = currUserDecks
         if request.user.username == username:
-            self.context['me'] = request.user
-            return render(request, 'pakidex/buildDeck.html', self.context)
+            context['me'] = request.user
+            return render(request, 'pakidex/buildDeck.html', context)
         else:
             if request.user.is_authenticated:
-                self.context['me'] = request.user
-                return render(request, 'pakidex/buildDeck.html', self.context)
+                context['me'] = request.user
+                return render(request, 'pakidex/buildDeck.html', context)
             else:
-                return render(request, 'pakidex/buildDeck.html', self.context)
+                return render(request, 'pakidex/buildDeck.html', context)
 
     def post(self, request, username):
+        user = request.user
         newDeck = Deck()
-        newDeck.set(deck=request.user)
         newDeck.save()
+        newDeck.deck.add(user.id)
         context = {
             'deck' : newDeck,
         }
@@ -122,11 +134,9 @@ class BuildView(View):
             health = int(request.POST['level']) * 10,
         )
 
-        newDeck = Deck.objects.filter(id=request.POST['deck_id'])
+        newDeck = Deck.objects.get(id=request.POST['deck_id'])
         newCard.save()
-        print("newCard.save()")
-        print(newCard)
-        newDeck.append(newCard)
+        newDeck.whoseCard.add(newCard)
 
         context = {
             'deck' : newDeck,

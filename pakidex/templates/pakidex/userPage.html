@@ -63,9 +63,11 @@
     <br />
 
       {% for deck in userDecks %}
+        <h5>Deck id: {{ deck.id }}</h5>
         <table class="table">
           <thead>
             <tr>
+              <th scope="col">Card Id</th>
               <th scope="col">Personal Name</th>
               <th scope="col">Species</th>
               <th scope="col">Type</th>
@@ -76,6 +78,7 @@
           <tbody>
             {% for card in deck.cards %}
               <tr>
+                <td>{{ card.id }}</td>
                 <td>{{ card.personalName }}</td>
                 <td>{{ card.species }}</td>
                 <td>{{ card.type }}</td>
