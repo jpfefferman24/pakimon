@@ -63,15 +63,3 @@ class Move(models.Model):
     def __str__(self):
         moveStr = "Move Name: " + self.moveName + ", Move Number: " + str(self.moveNum)
         return moveStr
-
-class Pakimon(models.Model):
-    whichCard = models.ForeignKey(
-        Card,
-        on_delete = models.CASCADE,
-        null = True,
-    )
-    pakiName = models.CharField(max_length = 280)
-
-    def __str__(self):
-        pakiStr = "Pakimon Name: " + self.pakiName
-        return pakiStr

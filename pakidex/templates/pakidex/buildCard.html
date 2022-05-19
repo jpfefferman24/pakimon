@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+
+  <head>
+    <title>Card Builder</title>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+
+    <!-- <link rel="icon" type="image/png" href="C:\Users\jpfef\OneDrive\Desktop\School\2021-2022\Applied Computer Science\Django\pakimon\pakidex\static\pakidex\images\pokibol.png" /> -->
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="row">
+          <div class="col-3">
+            <div class="card" style="width: 18rem;">
+              <form method="POST">
+                <input type="hidden" name="deck_id" value="{{ deck_id }}" />
+                <div class="form-group">
+                  <label for="pName">Personal Name:</label>
+                  <input type="text" class="form-control" name="pName" id="pName">
+                </div>
+                <div class="form-group">
+                  <label for="type">Type:</label>
+                  <select class="form-control" name="type" id="type">
+                    <option>Grass</option>
+                    <option>Water</option>
+                    <option>Fire</option>
+                    <option>Electric</option>
+                    <option>Ice</option>
+                    <option>Flying</option>
+                    <option>Rock</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="species">Species:</label>
+                  <select class="form-control" name="species" id="species">
+                    <option>Bulbasaur</option>
+                    <option>Squirtle</option>
+                    <option>Charmander</option>
+                    <option>Pikachu</option>
+                    <option>Vanillite</option>
+                    <option>Pidgey</option>
+                    <option>Geodude</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="level">Level</label>
+                  <input type="text" class="form-control" name="level" id="level">
+                </div>
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Save Card</button>
+              </form>
+            </div>
+          </div>
+      </div>
+    </div>
+
+  </body>
+
+</htmL>
