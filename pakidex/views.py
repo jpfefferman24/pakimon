@@ -53,6 +53,23 @@ class UserView(View):
         if 'logout' in request.POST.keys():
             logout(request)
             form = AuthenticationForm()
+        else:
+            context = {}
+            currUser = User.objects.get(username = username)
+            userDecks = Deck.objects.filter(deck = currUser.id)
+            # go through with for deck in userDecks and fetch each card
+            print(userDecks)
+            context['currUser'] = currUser
+            context['userDecks'] = userDecks
+            if request.user.username == username:
+                context['me'] = request.user
+                return render(request, 'pakidex/userPage.html', context)
+            else:
+                if request.user.is_authenticated:
+                    context['me'] = request.user
+                    return render(request, 'pakidex/userPage.html', context)
+                else:
+                    return render(request, 'pakidex/userPage.html', context)
 
     def post(self, request, username):
         if 'logout' in request.POST.keys():
@@ -73,6 +90,19 @@ class UserView(View):
                         login(request, user = user)
                 print("login: ", request.user)
                 user = User.objects.get(username=username)
+            elif 'pName' in request.POST.keys():
+                newCard = Card(
+                    personalName = request.POST['pName'],
+                    species = request.POST['species'],
+                    type = request.POST['type'],
+                    level = request.POST['level'],
+                    health = int(request.POST['level']) * 10,
+                )
+
+                newCard.save()
+                newDeck = Deck.objects.get(id=request.POST['deck_id'])
+                newDeck.whoseCard.add(newCard)
+                user = request.user
             else:
                 user = request.user
                 deckToDelete = Deck.objects.get(id = request.POST['deck_id'])
@@ -100,13 +130,6 @@ class BuildDeckView(View):
     allProfiles = Profile.objects.all()
 
     def get(self, request, username):
-        user = request.user
-        newDeck = Deck()
-        newDeck.save()
-        newDeck.deck.add(user.id)
-        context = {
-            'deck' : newDeck,
-        }
         context['deck_id'] = newDeck.id
         currUser = User.objects.get(username = username)
         # currUserDecks = Deck.objects.filter(deck = username)
@@ -132,8 +155,20 @@ class BuildDeckView(View):
         }
         context['deck_id'] = newDeck.id
 
+        newCard = Card(
+            personalName = request.POST['pName'],
+            species = request.POST['species'],
+            type = request.POST['type'],
+            level = request.POST['level'],
+            health = int(request.POST['level']) * 10,
+        )
+
+        newCard.save()
+        newDeck.whoseCard.add(newCard)
+
         context = {
             'deck' : newDeck,
+            'card' : newCard,
         }
 
         return render(request, 'pakidex/buildDeck.html', context)
@@ -142,13 +177,6 @@ class BuildCardView(View):
     template_name = "buildCard.html"
 
     def get(self, request, username):
-        user = request.user
-        newDeck = Deck()
-        newDeck.save()
-        newDeck.deck.add(user.id)
-        context = {
-            'deck' : newDeck,
-        }
         context['deck_id'] = newDeck.id
         request.session['deck_id'] = newDeck.id
         currUser = User.objects.get(username = username)
@@ -166,21 +194,24 @@ class BuildCardView(View):
                 return render(request, 'pakidex/buildCard.html', context)
 
     def post(self, request, username):
-        deck_id = request.session.get('deck_id')
-        newCard = Card(
-            personalName = request.POST['pName'],
-            species = request.POST['species'],
-            type = request.POST['type'],
-            level = request.POST['level'],
-            health = int(request.POST['level']) * 10,
-        )
-
+        deck_id = request.POST['deck_id']
+        print(deck_id)
         newDeck = Deck.objects.get(id=deck_id)
-        newCard.save()
-        newDeck.whoseCard.add(newCard)
+        if 'pName' in request.POST.keys():
+            newCard = Card(
+                personalName = request.POST['pName'],
+                species = request.POST['species'],
+                type = request.POST['type'],
+                level = request.POST['level'],
+                health = int(request.POST['level']) * 10,
+            )
+
+            newCard.save()
+            newDeck.whoseCard.add(newCard)
 
         context = {
-            'card' : newCard,
+            'deck_id': deck_id,
+            'deck': newDeck,
         }
 
-        return render(request, 'pakidex.buildCard.html', context)
+        return render(request, 'pakidex/buildCard.html', context)

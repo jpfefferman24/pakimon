@@ -19,11 +19,20 @@
 
   <body>
 
+    <h1>Card Builder</h1>
+
+    <form method="POST" action="http://127.0.0.1:8000/play/{{ user.username }}">
+      <input type="hidden" name=deck_id value="{{ deck_id }}" />
+      {% csrf_token %}
+      <button class="btn btn-danger" type="submit">Cancel</button>
+    </form>
+
     <div class="container">
+      <h3>Add Card to Deck</h3>
       <div class="row">
           <div class="col-3">
             <div class="card" style="width: 18rem;">
-              <form method="POST">
+              <form method="POST" action="{% url 'username' user.username %}">
                 <input type="hidden" name="deck_id" value="{{ deck_id }}" />
                 <div class="form-group">
                   <label for="pName">Personal Name:</label>
