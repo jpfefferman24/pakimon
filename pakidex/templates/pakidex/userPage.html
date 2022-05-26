@@ -20,33 +20,66 @@
   </head>
 
   <body>
+    <script>
+      function makeTrue() {
+        console.log("here")
+        confirmedBool = document.getElementById("confirmed");
+        confirmedBool = true;
+        yesButton = document.getElementById("yesButton");
+        console.log(yesButton);
+        yesButton.dataDismiss="modal";
+        yesButton.click();
+        console.log(confirmedBool)
+      }
+    </script>
+
     <div class="container">
       <h1>Pakimon</h1>
 
       <h3>Welcome, {{ user.username }}</h3>
+      <h4> {{ currUser.username }}'s page</h4>
 
       <br />
 
       <form method="POST">
         {% csrf_token %}
         <input type="hidden" name="logout" value="logout"></input>
-        <button type="submit" class="btn btn-danger">Logout</button>
+        <button type="submit" class="btn btn-danger btn-lg">Logout</button>
       </form>
 
-      <a class="page-link" href="{% url 'buildDeck' user.username %}" style="color:black;text-decoration:none;">
-        <p>+ Build a New Deck</p>
-      </a>
+      <form method="POST" action="http://127.0.0.1:8000/play/{{ user.username }}">
+        {% csrf_token %}
+        <input type="hidden" name="home" value="home"></input>
+        <button type="submit" class="btn btn-primary btn-lg">Home</button>
+      </form>
+
+      <br />
+
+      {% if user == currUser %}
+        <a class="page-link" href="{% url 'buildDeck' user.username %}" style="color:black;text-decoration:none;">
+          <p>+ Build a New Deck</p>
+        </a>
+      {% endif %}
 
       <br />
 
       {% for deck in userDecks %}
         <div class="container">
           <h5>Deck id: {{ deck.id }}</h5>
-          <form method="POST" action="{% url 'buildCard' user.username %}">
-            {% csrf_token %}
-            <input type="hidden" name="deck_id" value="{{ deck.id }}"></input>
-            <button type="submit" class="btn btn-success">+ Add Card</button>
-          </form>
+          {% if user == currUser %}
+            <form method="POST" action="{% url 'buildCard' user.username %}">
+              {% csrf_token %}
+              <input type="hidden" name="deck_id" value="{{ deck.id }}"></input>
+              <button type="submit" class="btn btn-success">+ Add Card</button>
+            </form>
+            <form method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="deck_id" value="{{ deck.id }}"></input>
+              <input type="hidden" name="removeDeck" value="removeDeck"></input>
+              <input type="hidden" id="confirmed" name="confirmed" value="false"></input>
+              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDelete">🗑️ Delete Deck</button>
+            </form>
+          {% endif %}
           <div class="row">
             {% for card in deck.cards %}
               <div class="col-3">
@@ -57,6 +90,14 @@
                   <p>Type: {{ card.type }}</p>
                   <p>Level: {{ card.level }}</p>
                   <p>Health: {{ card.health }} </p>
+                  {% if user == currUser %}
+                  <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="card_id" value="{{ card.id }}"></input>
+                    <input type="hidden" name="removeCard" value="removeCard"></input>
+                    <button type="submit" class="btn btn-warning btn-sm">⚠️ Delete Card</button>
+                  </form>
+                  {% endif %}
                 </div>
               </div>
             {% endfor %}
@@ -97,6 +138,24 @@
         <br />
       {% endfor %}
 
+    </div>
+    <div id="confirmDelete" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Confirm Delete</h4>
+          </div>
+          <div class="modal-body">
+            <p>Akre you sure you want to delete this deck?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+            <button type="button" id="yesButton" class="btn btn-default" onclick="makeTrue()" data-dismiss="modal">Yes</button>
+          </div>
+        </div>
+
+      </div>
     </div>
   </body>
 </html>

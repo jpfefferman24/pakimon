@@ -55,30 +55,34 @@ class UserView(View):
             form = AuthenticationForm()
         else:
             context = {}
+            loggedInUser = request.user
             currUser = User.objects.get(username = username)
             userDecks = Deck.objects.filter(deck = currUser.id)
             # go through with for deck in userDecks and fetch each card
             print(userDecks)
             context['currUser'] = currUser
             context['userDecks'] = userDecks
-            if request.user.username == username:
-                context['me'] = request.user
-                return render(request, 'pakidex/userPage.html', context)
-            else:
-                if request.user.is_authenticated:
-                    context['me'] = request.user
-                    return render(request, 'pakidex/userPage.html', context)
-                else:
-                    return render(request, 'pakidex/userPage.html', context)
+            for deck in userDecks:
+                deck.cards = deck.whoseCard.all()
+                for card in deck.cards:
+                    print(card.personalName)
+            context = {
+                # 'form': form,
+                'currUser' : currUser,
+                'user' : loggedInUser,
+                'userDecks' : userDecks,
+            }
+
+            return render(request, 'pakidex/userPage.html', context)
 
     def post(self, request, username):
         if 'logout' in request.POST.keys():
             logout(request)
             form = AuthenticationForm()
             return HttpResponseRedirect("http://127.0.0.1:8000/")
-
         else:
             print(request.POST)
+            user = request.user
             form = AuthenticationForm(data=request.POST)
             if 'username' in request.POST.keys():
                 if form.is_valid():
@@ -103,8 +107,11 @@ class UserView(View):
                 newDeck = Deck.objects.get(id=request.POST['deck_id'])
                 newDeck.whoseCard.add(newCard)
                 user = request.user
-            else:
-                user = request.user
+            elif 'removeCard' in request.POST.keys():
+                cardToDelete = Card.objects.get(id = request.POST['card_id'])
+                cardToDelete.delete()
+            elif 'deckCancel' in request.POST.keys() or ('removeDeck' in request.POST.keys() and 'confirmed' == True):
+                print(request.POST)
                 deckToDelete = Deck.objects.get(id = request.POST['deck_id'])
                 deckToDelete.delete()
             userDecks = Deck.objects.filter(deck=user)
@@ -116,12 +123,10 @@ class UserView(View):
             context = {
                 # 'form': form,
                 'user' : user,
+                'currUser' : user,
                 'profile': self.allProfiles,
                 'userDecks' : userDecks,
             }
-            print(user.username)
-            print(context)
-            print(context['userDecks'][0].__dict__)
 
             return render(request, 'pakidex/userPage.html', context)
 
@@ -130,6 +135,11 @@ class BuildDeckView(View):
     allProfiles = Profile.objects.all()
 
     def get(self, request, username):
+        context = { }
+        user = request.user
+        newDeck = Deck()
+        newDeck.save()
+        newDeck.deck.add(user.id)
         context['deck_id'] = newDeck.id
         currUser = User.objects.get(username = username)
         # currUserDecks = Deck.objects.filter(deck = username)

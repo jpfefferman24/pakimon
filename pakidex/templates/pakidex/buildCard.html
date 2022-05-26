@@ -23,6 +23,7 @@
 
     <form method="POST" action="http://127.0.0.1:8000/play/{{ user.username }}">
       <input type="hidden" name=deck_id value="{{ deck_id }}" />
+      <input type="hidden" name=cardCancel value="cardCancel" />
       {% csrf_token %}
       <button class="btn btn-danger" type="submit">Cancel</button>
     </form>
