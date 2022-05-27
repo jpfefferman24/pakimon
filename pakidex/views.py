@@ -85,6 +85,7 @@ class UserView(View):
             user = request.user
             form = AuthenticationForm(data=request.POST)
             if 'username' in request.POST.keys():
+                print(1)
                 if form.is_valid():
                     username = form.cleaned_data['username']
                     password = form.cleaned_data['password']
@@ -95,6 +96,7 @@ class UserView(View):
                 print("login: ", request.user)
                 user = User.objects.get(username=username)
             elif 'pName' in request.POST.keys():
+                print(2)
                 newCard = Card(
                     personalName = request.POST['pName'],
                     species = request.POST['species'],
@@ -108,12 +110,23 @@ class UserView(View):
                 newDeck.whoseCard.add(newCard)
                 user = request.user
             elif 'removeCard' in request.POST.keys():
+                print(3)
                 cardToDelete = Card.objects.get(id = request.POST['card_id'])
                 cardToDelete.delete()
-            elif 'deckCancel' in request.POST.keys() or ('removeDeck' in request.POST.keys() and 'confirmed' == True):
-                print(request.POST)
+            elif 'deckCancel' in request.POST.keys():
                 deckToDelete = Deck.objects.get(id = request.POST['deck_id'])
+                print(deckToDelete)
+                print("deleted")
                 deckToDelete.delete()
+            elif 'removeDeck' in request.POST.keys():
+                IS_CONFIRMED = 'confirmed' + request.POST['deck_id']
+                print(request.POST[IS_CONFIRMED])
+                if request.POST[IS_CONFIRMED] == 'true':
+                    deckToDelete = Deck.objects.get(id = request.POST['deck_id'])
+                    deckToDelete.delete()
+
+            else:
+                print(5)
             userDecks = Deck.objects.filter(deck=user)
             for deck in userDecks:
                 deck.cards = deck.whoseCard.all()

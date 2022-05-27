@@ -21,15 +21,17 @@
 
   <body>
     <script>
-      function makeTrue() {
+      function makeTrue(deck_id) {
         console.log("here")
-        confirmedBool = document.getElementById("confirmed");
-        confirmedBool = true;
-        yesButton = document.getElementById("yesButton");
+        confirmedBool = document.getElementById("confirmed" + deck_id);
+        confirmedBool.value = true;
+        yesButton = document.getElementById("yesButton" + deck_id);
         console.log(yesButton);
         yesButton.dataDismiss="modal";
-        yesButton.click();
+        deleteForm = document.getElementById("deleteForm" + deck_id);
+        console.log(deleteForm);
         console.log(confirmedBool)
+        deleteForm.submit();
       }
     </script>
 
@@ -72,12 +74,12 @@
               <input type="hidden" name="deck_id" value="{{ deck.id }}"></input>
               <button type="submit" class="btn btn-success">+ Add Card</button>
             </form>
-            <form method="POST">
+            <form method="POST" id="deleteForm{{ deck.id }}">
               {% csrf_token %}
               <input type="hidden" name="deck_id" value="{{ deck.id }}"></input>
               <input type="hidden" name="removeDeck" value="removeDeck"></input>
-              <input type="hidden" id="confirmed" name="confirmed" value="false"></input>
-              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDelete">🗑️ Delete Deck</button>
+              <input type="hidden" id="confirmed{{ deck.id }}" name="confirmed{{ deck.id }}" value="false"></input>
+              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDelete{{ deck.id }}">🗑️ Delete Deck</button>
             </form>
           {% endif %}
           <div class="row">
@@ -136,26 +138,27 @@
           </tbody>
         </table>
         <br />
-      {% endfor %}
 
-    </div>
-    <div id="confirmDelete" class="modal fade" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Confirm Delete</h4>
-          </div>
-          <div class="modal-body">
-            <p>Akre you sure you want to delete this deck?</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-            <button type="button" id="yesButton" class="btn btn-default" onclick="makeTrue()" data-dismiss="modal">Yes</button>
+        <div id="confirmDelete{{ deck.id }}" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Confirm Delete</h4>
+              </div>
+              <div class="modal-body">
+                <p>Akre you sure you want to delete this deck?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" id="yesButton{{ deck.id }}" class="btn btn-default" onclick="makeTrue({{ deck.id }})" data-dismiss="modal">Yes</button>
+              </div>
+            </div>
           </div>
         </div>
 
-      </div>
+      {% endfor %}
+
     </div>
   </body>
 </html>
